@@ -1,6 +1,7 @@
 # MOCT - Memory OverClocking Tool
 
 [![Static Badge](https://img.shields.io/badge/%20Discord-grey?logo=discord)](https://discord.gg/SU9db8WgUp)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/memoryoctool/MOCT/build.yml)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/memoryoctool/MOCT/total)
 
 Memory overclocking is tideous. There are many parameters to adjust: voltage, frequency, timings, subtimings. A lot of trial and error is needed to get the best results. After each change you reboot your system, check if the changes are applied or not, run system or memory stability tests. And while tests are running you have to look after it to see if the system is stable or not.
