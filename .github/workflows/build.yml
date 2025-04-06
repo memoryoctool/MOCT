@@ -34,8 +34,10 @@ jobs:
         with:
           inputs: dist/moct.exe
 
-      - name: Upload built executable
+      - name: Upload built executable and Sigstore bundle
         uses: actions/upload-artifact@v4
         with:
           name: moct
-          path: dist/moct.exe
+          path: |
+           dist/moct.exe
+           dist/moct.exe.sigstore.json
