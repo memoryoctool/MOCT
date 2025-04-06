@@ -6,7 +6,7 @@ from moct.gui.main import MainGui
 from moct.memtest import MemTest
 from moct.notifyer import Notifier
 
-VERSION = "1.0.0"
+VERSION = "1.0.4"
 
 
 def main():

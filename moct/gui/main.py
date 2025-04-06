@@ -33,9 +33,11 @@ class MainGui:
 
     @staticmethod
     def get_main_window():
+        from main import VERSION
+
         root = Tk()
         root.iconphoto(True, Icon.get_as_file())
-        root.title('MOCT - Memory OverClocking Tool')
+        root.title(f'MOCT {VERSION}')
         w = 380
         h = 400
         x = int(root.winfo_screenwidth() / 2 - w / 2)
@@ -83,7 +85,7 @@ class MainGui:
 
     @classmethod
     def get_testmem5_block(cls, root):
-        Label(root, text="TestMem5 path:").place(x=10, y=50)
+        Label(root, text="TestMem5 location:").place(x=10, y=50)
         cls.testmem5_path_entry = Entry(root)
         cls.testmem5_path_entry.insert(0, Config.get_testmem5_path())
         cls.testmem5_path_entry.config(state='readonly')
