@@ -9,10 +9,14 @@ MOCT is a tool that makes overclocking easier. When you make a change in BIOS an
 
 ## Features
 
+<img src="https://github.com/user-attachments/assets/3507cfa6-24f4-43e3-8ba2-7fd5165216fe" align="right">
+
 * 🔧 **Check memory frequency on startup**: When you boot up your system, MOCT checks if the changes made in BIOS were applied correctly. 
 * 🔥 **Stability Tests**: Run stability tests on your memory to ensure that overclocking is stable.
 * 💬 **Telegram integration**: Send notification to Telegram when stability tests are done, so you do not have to check the computer all the time.
 * 🔃 **Reboot PC into BIOS**: When testing is done (with errors or without), system will reboot automatically into BIOS. This way you can make changes faster and test again.
+
+<br clear="both">
 
 ## Download
 
