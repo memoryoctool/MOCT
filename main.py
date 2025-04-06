@@ -22,7 +22,10 @@ def main():
     # Main thread
     root.mainloop()
 
-    asyncio.run(Notifier.bot().session.close())
+    try:
+        asyncio.run(Notifier.bot().session.close())
+    except:
+        pass
 
 
 if __name__ == "__main__":
