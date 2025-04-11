@@ -28,7 +28,7 @@ After testing (whether passed or failed), your system will automatically reboot 
 
 ## 📦 Download
 
-You can download exe file from releases.
+You can download exe file from [latest release](https://github.com/memoryoctool/MOCT/releases/latest).
 
 ## ❓ Do i still need to set memory timings manually?
 
