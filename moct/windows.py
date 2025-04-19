@@ -3,6 +3,7 @@ import os
 import sys
 
 import win32com.client
+import win32evtlog
 import win32security
 
 
@@ -114,3 +115,26 @@ class Windows:
     @staticmethod
     def reboot_into_bios():
         os.system('shutdown /r /fw /t 0 /f')
+
+    @staticmethod
+    def read_events_from_windows_log():
+        handle = win32evtlog.OpenEventLog('localhost', 'System')
+        flags = win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ | win32evtlog.EVENTLOG_ERROR_TYPE
+        return win32evtlog.ReadEventLog(handle, flags, 0)
+
+    @classmethod
+    def get_last_whea_error_timestamp(cls):
+        events = cls.read_events_from_windows_log()
+        for event in events:
+            if event.SourceName.find("WHEA") != -1:
+                return event.TimeGenerated.timestamp()
+        return 0
+
+    @classmethod
+    def get_whea_errors_count_since(cls, timestamp):
+        count = 0
+        events = cls.read_events_from_windows_log()
+        for event in events:
+            if event.SourceName.find("WHEA") != -1 and event.TimeGenerated.timestamp() > timestamp:
+                count += 1
+        return count

@@ -22,6 +22,9 @@ class MemTest:
         if cls.do_test:
             MainGui.append_logs('Running memory tests in 5 sec.')
             sleep(5)
+        else:
+            frequency = cls.get_current_memory_frequency()
+            MainGui.append_logs(f'Memory frequency is {frequency} MHz')
 
         while True:
             if not cls.do_test:
@@ -32,10 +35,10 @@ class MemTest:
 
             frequency = cls.get_current_memory_frequency()
             if cls.is_current_frequency_was_reset_to_default():
-                MainGui.append_logs(f'Memory frequency is {frequency} MHz')
-            else:
                 MainGui.append_logs(f'Memory frequency is {frequency} MHz, seems bad')
-                Notifier.notify(f'Memory frequency is {frequency} MHz')
+                Notifier.notify(f'Memory was reset to default frequency {frequency} MHz')
+            else:
+                MainGui.append_logs(f'Memory frequency is {frequency} MHz')
 
             can_reboot = True
             result = cls.run_testmem5()
@@ -95,7 +98,9 @@ class MemTest:
             cls.kill_tm5()
             return 2
 
+        last_whea_error_timestamp = Windows.get_last_whea_error_timestamp()
         time_from_last_check = 0
+        check_interval = 10
         while True:
             sleep(0.1)
             if not cls.do_test:
@@ -103,7 +108,7 @@ class MemTest:
                 cls.kill_tm5()
                 return 2
             time_from_last_check += 0.1
-            if time_from_last_check < 0.1:
+            if time_from_last_check < check_interval:
                 continue
             time_from_last_check = 0
 
@@ -115,8 +120,13 @@ class MemTest:
                     cls.kill_tm5()
                     return 3
 
+            new_whea_errors = Windows.get_whea_errors_count_since(last_whea_error_timestamp)
+            if new_whea_errors > 0:
+                Notifier.notify(f"Found new WHEA errors")
+                cls.kill_tm5()
+                return 1
+
             stats = cls.get_testmem5_stats_from_window()
-            print(stats)
 
             if int(stats['errors']) > 0:
                 Notifier.notify(
@@ -173,7 +183,7 @@ class MemTest:
 
     @classmethod
     def is_current_frequency_was_reset_to_default(cls):
-        return cls.get_current_memory_frequency() not in Config.get_default_memory_frequencies()
+        return cls.get_current_memory_frequency() in Config.get_default_memory_frequencies()
 
     @staticmethod
     def get_current_memory_frequency():
