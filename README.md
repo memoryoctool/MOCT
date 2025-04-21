@@ -18,8 +18,11 @@ On startup, MOCT checks if your memory settings were applied or reset to default
 🔥 **Stability Testing**:
 Automatically runs TestMem5 to validate system stability after each reboot.
 
+🧠 **WHEA Error Detection**:
+Checks Windows Event Logs for WHEA errors — especially useful for AMD systems with DDR4 memory running above 3600 MHz, where instability might not show in TM5 tests.
+
 💬 **Telegram Notifications**:
-Get notified on Telegram when tests complete—no need to keep checking manually.
+Get notified on Telegram when tests complete — no need to keep checking manually.
 
 🔃 **BIOS Reboot Automation**:
 After testing (whether passed or failed), your system will automatically reboot into BIOS so you can tweak settings faster.
@@ -48,6 +51,6 @@ If MOCT has helped you, consider ⭐️ starring the repo.
 
 ## ⚠️ Disclaimer
 
-This software **does not modify** any system or BIOS settings. It only verifies if memory overclocking settings were applied and ensures system stability through testing.
+This software **does not modify** any system or BIOS settings. It only verifies that the system is stable through testing.
 
 
