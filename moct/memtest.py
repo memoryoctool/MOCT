@@ -101,6 +101,7 @@ class MemTest:
         last_whea_error_timestamp = Windows.get_last_whea_error_timestamp()
         time_from_last_check = 0
         check_interval = 10
+        frequency = cls.get_current_memory_frequency()
         while True:
             sleep(0.1)
             if not cls.do_test:
@@ -122,7 +123,7 @@ class MemTest:
 
             new_whea_errors = Windows.get_whea_errors_count_since(last_whea_error_timestamp)
             if new_whea_errors > 0:
-                Notifier.notify(f"Found new WHEA errors")
+                Notifier.notify(f"Found new WHEA errors ({frequency} MHz)")
                 cls.kill_tm5()
                 return 1
 
