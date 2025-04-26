@@ -20,10 +20,16 @@ class TelegramSettingsGui:
 
     @classmethod
     def get_main_window(cls):
+        pos = ''
+        last_window_x = Config.get_param('gui', 'tg_settings', 'x', throw=False)
+        last_window_y = Config.get_param('gui', 'tg_settings', 'y', throw=False)
+        if last_window_x and last_window_y:
+            pos = f'+{last_window_x}+{last_window_y}'
+
         root = Toplevel()
         root.iconphoto(True, Icon.get_as_file())
         root.title('MOCT - Telegram Settings')
-        root.geometry('380x165')
+        root.geometry(f'380x165{pos}')
         root.resizable(False, False)
         root.protocol("WM_DELETE_WINDOW", lambda: cls.dismiss())
         root.grab_set()
@@ -31,6 +37,15 @@ class TelegramSettingsGui:
 
     @classmethod
     def dismiss(cls):
+        geometry = cls.root.geometry()
+        position = geometry.split('+')
+        if len(position) >= 3:
+            x = int(position[1])
+            y = int(position[2])
+
+            Config.set_param(x, 'gui', 'tg_settings', 'x')
+            Config.set_param(y, 'gui', 'tg_settings', 'y')
+
         cls.root.grab_release()
         cls.root.destroy()
 

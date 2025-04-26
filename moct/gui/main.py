@@ -31,20 +31,37 @@ class MainGui:
         cls.get_logs_block(cls.root)
         return cls.root
 
-    @staticmethod
-    def get_main_window():
+    @classmethod
+    def get_main_window(cls):
         from main import VERSION
+
+        last_window_x = Config.get_param('gui', 'main', 'x', throw=False)
+        last_window_y = Config.get_param('gui', 'main', 'y', throw=False)
 
         root = Tk()
         root.iconphoto(True, Icon.get_as_file())
         root.title(f'MOCT {VERSION}')
         w = 380
         h = 400
-        x = int(root.winfo_screenwidth() / 2 - w / 2)
-        y = int(root.winfo_screenheight() / 2 - h / 2)
+        x = last_window_x if last_window_x else int(root.winfo_screenwidth() / 2 - w / 2)
+        y = last_window_y if last_window_y else int(root.winfo_screenheight() / 2 - h / 2)
         root.geometry(f'{w}x{h}+{x}+{y}')
         root.resizable(False, False)
+        root.protocol("WM_DELETE_WINDOW", lambda: cls.dismiss())
         return root
+
+    @classmethod
+    def dismiss(cls):
+        geometry = cls.root.geometry()
+        position = geometry.split('+')
+        if len(position) >= 3:
+            x = int(position[1])
+            y = int(position[2])
+
+            Config.set_param(x, 'gui', 'main', 'x')
+            Config.set_param(y, 'gui', 'main', 'y')
+
+        cls.root.destroy()
 
     @classmethod
     def get_menu_bar(cls, root):
@@ -94,7 +111,7 @@ class MainGui:
 
     @classmethod
     def select_testmem5_path(cls):
-        path = filedialog.askopenfilename(filetypes=(("Exe files", "*.exe"), ("all files", "*.*")))
+        path = filedialog.askopenfilename(filetypes=(("Exe files", "*.exe"), ("All files", "*.*")))
         if not path:
             return
         Config.set_testmem5_path(path)

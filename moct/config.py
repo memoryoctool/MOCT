@@ -40,85 +40,90 @@ class Config:
             stream.write(yaml.dump(params))
 
     @classmethod
-    def get_run_tests_on_startup(cls):
+    def get_param(cls, *path, throw=True):
+        def find_in_config(config_dict):
+            current = config_dict
+            for i, key in enumerate(path):
+                if key not in current:
+                    return None
+                if i == len(path) - 1:
+                    return current[key]
+                current = current[key]
+            return None
+
+        result = find_in_config(cls.get())
+        if result is not None:
+            return result
+
+        result = find_in_config(cls.default_params)
+        if result is not None:
+            return result
+
+        if throw:
+            raise ValueError(f'Path {path} is not found in config')
+
+        return None
+
+    @classmethod
+    def set_param(cls, value, *path):
+        if not path:
+            raise ValueError("Path cannot be empty")
+
         params = cls.get()
-        if 'run_tests_on_startup' in params:
-            return bool(params['run_tests_on_startup'])
-        return bool(cls.default_params['run_tests_on_startup'])
+        current = params
+
+        for i, key in enumerate(path):
+            if i == len(path) - 1:
+                current[key] = value
+            else:
+                if key not in current or not isinstance(current[key], dict):
+                    current[key] = {}
+                current = current[key]
+
+        cls.save(params)
+
+        return value
+
+    @classmethod
+    def get_run_tests_on_startup(cls):
+        return bool(cls.get_param('run_tests_on_startup'))
 
     @classmethod
     def set_run_tests_on_startup(cls, value):
-        params = cls.get()
-        params['run_tests_on_startup'] = bool(value)
-        cls.save(params)
+        cls.set_param(bool(value), 'run_tests_on_startup')
 
     @classmethod
     def get_telegram_bot_token(cls):
-        params = cls.get()
-        if 'telegram' in params:
-            if 'bot_token' in params['telegram']:
-                return params['telegram']['bot_token']
-        return cls.default_params['telegram']['bot_token']
+        return cls.get_param('telegram', 'bot_token')
 
     @classmethod
     def set_telegram_bot_token(cls, token):
-        params = cls.get()
-        if 'telegram' not in params:
-            params['telegram'] = cls.default_params['telegram']
-        params['telegram']['bot_token'] = str(token)
-        cls.save(params)
+        cls.set_param(str(token), 'telegram', 'bot_token')
 
     @classmethod
     def get_telegram_chat_id(cls):
-        params = cls.get()
-        if 'telegram' in params:
-            if 'chat_id' in params['telegram']:
-                return params['telegram']['chat_id']
-        return cls.default_params['telegram']['chat_id']
+        return cls.get_param('telegram', 'chat_id')
 
     @classmethod
     def set_telegram_chat_id(cls, chat_id):
-        params = cls.get()
-        if 'telegram' not in params:
-            params['telegram'] = cls.default_params['telegram']
-        params['telegram']['chat_id'] = str(chat_id)
-        cls.save(params)
+        cls.set_param(str(chat_id), 'telegram', 'chat_id')
 
     @classmethod
     def get_testmem5_path(cls):
-        params = cls.get()
-        if 'testmem5' in params:
-            if 'path' in params['testmem5']:
-                return params['testmem5']['path']
-        return cls.default_params['testmem5']['path']
+        return cls.get_param('testmem5', 'path')
 
     @classmethod
     def set_testmem5_path(cls, path):
-        params = cls.get()
-        if 'testmem5' not in params:
-            params['testmem5'] = cls.default_params['testmem5']
-        params['testmem5']['path'] = str(path)
-        cls.save(params)
+        cls.set_param(str(path), 'testmem5', 'path')
 
     @classmethod
     def get_stop_on_errors(cls):
-        params = cls.get()
-        if 'testmem5' in params:
-            if 'stop_on_errors' in params['testmem5']:
-                return params['testmem5']['stop_on_errors']
-        return cls.default_params['testmem5']['stop_on_errors']
+        return cls.get_param('testmem5', 'stop_on_errors')
 
     @classmethod
     def set_stop_on_errors(cls, stop_on_errors):
-        params = cls.get()
-        if 'testmem5' not in params:
-            params['testmem5'] = cls.default_params['testmem5']
-        params['testmem5']['stop_on_errors'] = bool(stop_on_errors)
-        cls.save(params)
+        cls.set_param(bool(stop_on_errors), 'testmem5', 'stop_on_errors')
 
     @classmethod
     def get_default_memory_frequencies(cls):
-        params = cls.get()
-        if 'default_memory_frequencies' in params:
-            return params['default_memory_frequencies']
-        return cls.default_params['default_memory_frequencies']
+        return cls.get_param('default_memory_frequencies')

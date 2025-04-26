@@ -1,6 +1,7 @@
 import webbrowser
 from tkinter import *
 
+from moct.config import Config
 from moct.gui.icon import Icon
 
 
@@ -15,10 +16,16 @@ class AboutGui:
 
     @classmethod
     def get_main_window(cls):
+        pos = ''
+        last_window_x = Config.get_param('gui', 'about', 'x', throw=False)
+        last_window_y = Config.get_param('gui', 'about', 'y', throw=False)
+        if last_window_x and last_window_y:
+            pos = f'+{last_window_x}+{last_window_y}'
+
         root = Toplevel()
         root.iconphoto(True, Icon.get_as_file())
         root.title('About')
-        root.geometry('390x240')
+        root.geometry(f'390x240{pos}')
         root.resizable(False, False)
         root.protocol("WM_DELETE_WINDOW", lambda: cls.dismiss())
         root.grab_set()
@@ -26,6 +33,15 @@ class AboutGui:
 
     @classmethod
     def dismiss(cls):
+        geometry = cls.root.geometry()
+        position = geometry.split('+')
+        if len(position) >= 3:
+            x = int(position[1])
+            y = int(position[2])
+
+            Config.set_param(x, 'gui', 'about', 'x')
+            Config.set_param(y, 'gui', 'about', 'y')
+
         cls.root.grab_release()
         cls.root.destroy()
 
